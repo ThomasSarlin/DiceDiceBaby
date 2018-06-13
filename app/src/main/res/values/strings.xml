@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">ThirtyThrow</string>
+    <string name="roll">Roll</string>
+    <string name="reRoll">Re-Roll</string>
+    <string name="message_step1">Lock dices by selecting them</string>
+    <string name="message_step2">Select dices to combine for score</string>
+    <string name="message_step2_2">Add more dices to react score value</string>
+    <string name="message_score_added">Score added!</string>
+    <string name="next">Next round</string>
+    <string name="finished">Finish game</string>
+    <string name="message_score_added_fround_low">Score added! \nPress Roll to start next round</string>
+    <string name="message_score_added_fround">Score added, try to add more points or \nPress Roll to start next round</string>
+    <string name="message_too_large">Sum larger than score value</string>
+    <string name="spinner_prompt">Choose score value</string>
+    <string-array name="spinner">
+        <item>Low</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+</resources>

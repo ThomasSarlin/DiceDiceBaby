@@ -1,6 +1,5 @@
 package com.example.kanin.thirtythrow;
 
-import android.os.Parcel;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,10 +10,12 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public class ThirtyThrows extends AppCompatActivity {
     private static String TAG = "main";
+    private static String GL_KEY = "Gamelogic";
+    private ArrayList<ImageButton> mImageButtons;
     private Button mRollButton;
     private Button mNextRoundButton;
     private TextView mMessage;
@@ -25,19 +26,25 @@ public class ThirtyThrows extends AppCompatActivity {
     private GameLogic mGameLogic;
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
+    public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBundle(GL_KEY, mGameLogic.getBundle());
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thirty_throws);
+        if (savedInstanceState != null)
+            mGameLogic = new GameLogic(savedInstanceState.getBundle(GL_KEY));
+        else{
+            mGameLogic = new GameLogic();
+        }
         setup();
         checkGameStatus();
     }
 
     private void setup() {
-        mGameLogic = new GameLogic();
         mMessage = findViewById(R.id.message);
         mHeader = findViewById(R.id.header);
         updateHeader();
@@ -60,8 +67,8 @@ public class ThirtyThrows extends AppCompatActivity {
 
             }
         });
-        setDiceButtons();
         setNextButton();
+        setDiceButtons();
         setRollButton();
         setMessage(R.string.message_step1);
     }
@@ -91,30 +98,31 @@ public class ThirtyThrows extends AppCompatActivity {
     }
 
     private void setDiceButtons() {
-        mGameLogic.putDice(findViewById(R.id.dice1));
-        mGameLogic.putDice(findViewById(R.id.dice2));
-        mGameLogic.putDice(findViewById(R.id.dice3));
-        mGameLogic.putDice(findViewById(R.id.dice4));
-        mGameLogic.putDice(findViewById(R.id.dice5));
-        mGameLogic.putDice(findViewById(R.id.dice6));
-        for (Map.Entry<ImageButton, Dice> entry : mGameLogic.getDices().entrySet()) {
-            entry.getKey().setOnClickListener(v -> {
-                entry.getValue().toggleSelected();
-                renderImage(entry.getKey(), entry.getValue());
-                if (mGameLogic.lastSet())
-                    calculateScore();
-            });
-        }
+        mImageButtons = new ArrayList<>();
+        addDiceButton(R.id.dice1, mGameLogic.getDices().get(0));
+        addDiceButton(R.id.dice2, mGameLogic.getDices().get(1));
+        addDiceButton(R.id.dice3, mGameLogic.getDices().get(2));
+        addDiceButton(R.id.dice4, mGameLogic.getDices().get(3));
+        addDiceButton(R.id.dice5, mGameLogic.getDices().get(4));
+        addDiceButton(R.id.dice6, mGameLogic.getDices().get(5));
+    }
+    private void addDiceButton(int rId, Dice dice) {
+        ImageButton imageButton = findViewById(rId);
+        imageButton.setOnClickListener(view -> {
+            dice.toggleSelected();
+            renderImage(imageButton,dice);
+            if (mGameLogic.lastSet())
+                calculateScore();
+        });
+        mImageButtons.add(imageButton);
     }
 
     private void setRollButton() {
         mRollButton = findViewById(R.id.roll_button);
         mRollButton.setOnClickListener(v -> {
-            for (Map.Entry<ImageButton, Dice> entry : mGameLogic.getDices().entrySet()) {
-                entry.getValue().rollDice();
-                renderImage(entry.getKey(), entry.getValue());
-            }
+            mGameLogic.rollDices();
             mGameLogic.nextSet();
+            renderImages();
             checkGameStatus();
         });
     }
@@ -150,8 +158,8 @@ public class ThirtyThrows extends AppCompatActivity {
     }
 
     private void renderImages() {
-        for (Map.Entry<ImageButton, Dice> entry : mGameLogic.getDices().entrySet()) {
-            renderImage(entry.getKey(), entry.getValue());
+        for(int i =0;i<6;i++){
+            renderImage(mImageButtons.get(i),mGameLogic.getDices().get(i));
         }
     }
 

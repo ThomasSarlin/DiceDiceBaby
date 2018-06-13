@@ -1,13 +1,14 @@
 package com.example.kanin.thirtythrow;
+/**
+ * Class represents the Model part of the MVC in the ThirtyThrow Application,
+ * responsible for calculations, dices and keeping track of rounds/sets.
+ * @author Thomas Sarlin - id15tsn
+ */
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageButton;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 public class GameLogic {
     private static String CR_KEY = "currentRound";
@@ -24,6 +25,8 @@ public class GameLogic {
     private int mTotalScore;
     private int mRoundScore;
     private ArrayList<Score> mScoreHistory;
+    private ArrayList<ArrayList<Integer>> mDiceCombination;
+    private ArrayList<Integer> mCurrentCombination;
 
     public GameLogic() {
         addDices();
@@ -32,29 +35,32 @@ public class GameLogic {
         mTotalScore = 0;
         mRoundScore = 0;
         mScoreHistory = new ArrayList<>();
+        mDiceCombination = new ArrayList<>();
+
     }
     private void addDices(){
         mDices = new ArrayList<>();
-        mDices.add(new Dice());
-        mDices.add(new Dice());
-        mDices.add(new Dice());
-        mDices.add(new Dice());
-        mDices.add(new Dice());
-        mDices.add(new Dice());
+        mDices.addAll(Arrays.asList(
+                new Dice(),
+                new Dice(),
+                new Dice(),
+                new Dice(),
+                new Dice(),
+                new Dice()));
     }
     public GameLogic(Bundle bundle) {
-        mDices = (ArrayList<Dice>) bundle.getSerializable(DI_KEY);
         mCurrentRound = bundle.getInt(CR_KEY);
         mSet = bundle.getInt(CS_KEY);
         mTotalScore = bundle.getInt(TS_KEY);
         mRoundScore = bundle.getInt(RS_KEY);
         mScoreHistory = (ArrayList<Score>) bundle.getSerializable(HI_KEY);
+        mDices = (ArrayList<Dice>) bundle.getSerializable(DI_KEY);
     }
 
     public void addToHistory(String type) {
         Log.d(TAG, "Added to history type: " + type);
-        mScoreHistory.add(new Score(mRoundScore, type, mCurrentRound));
-        mTotalScore += mRoundScore;
+        mScoreHistory.add(new Score(mRoundScore, type, mCurrentRound,mDiceCombination));
+        mDiceCombination= new ArrayList<>();
         mRoundScore = 0;
     }
 
@@ -64,6 +70,9 @@ public class GameLogic {
 
     public void addScore(int score) {
         mRoundScore += score;
+        mTotalScore += score;
+        mDiceCombination.add(mCurrentCombination);
+
     }
 
     public int getRound() {
@@ -87,19 +96,25 @@ public class GameLogic {
     }
 
     public int checkScore(int targetScore) {
+        mCurrentCombination= new ArrayList<>();
         int score = 0;
         for (Dice dice : mDices) {
-            if (dice.isSelected())
+            if (dice.isSelected()) {
                 score += dice.getNumber();
+                mCurrentCombination.add(dice.getNumber());
+            }
         }
         return Integer.compare(score, targetScore);
     }
 
     public void collectLowScore() {
+        mCurrentCombination= new ArrayList<>();
         int score = 0;
         for (Dice dice : mDices) {
-            if (dice.getNumber() < 4)
+            if (dice.getNumber() < 4) {
                 score += dice.getNumber();
+                mCurrentCombination.add(dice.getNumber());
+            }
         }
         addScore(score);
     }
@@ -153,8 +168,8 @@ public class GameLogic {
         result.putInt(TS_KEY, mTotalScore);
         result.putInt(RS_KEY, mRoundScore);
         result.putInt(CS_KEY, mSet);
-        result.putSerializable(DI_KEY, mDices);
         result.putSerializable(HI_KEY, mScoreHistory);
+        result.putSerializable(DI_KEY, mDices);
         return result;
     }
 }

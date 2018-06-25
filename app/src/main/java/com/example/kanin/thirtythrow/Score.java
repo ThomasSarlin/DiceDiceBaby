@@ -28,7 +28,7 @@ public class Score implements Serializable{
         return mType;
     }
 
-    private String producDiceCombinationString(){
+    private String produceDiceCombinationString(){
         StringBuilder result= new StringBuilder();
         for(ArrayList arrayList:mDiceCombinations){
             for(int i=0;i<arrayList.size();i++){
@@ -42,6 +42,6 @@ public class Score implements Serializable{
     }
     public String toString(){
         return "Round: "+mRound +" Type: "+mType+"\nRound Score: "+mScore
-                + "\nCombinations: "+producDiceCombinationString();
+                + "\nCombinations: "+ produceDiceCombinationString();
     }
 }

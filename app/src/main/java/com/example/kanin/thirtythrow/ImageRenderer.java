@@ -1,6 +1,6 @@
 package com.example.kanin.thirtythrow;
 /**
- * HelpClass which keeps track of how the imagebuttons should be rendered.
+ * HelpClass which keeps track of how the image-buttons should be rendered.
  */
 
 import android.widget.ImageButton;

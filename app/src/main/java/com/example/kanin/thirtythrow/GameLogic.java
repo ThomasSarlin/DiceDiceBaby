@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameLogic {
+    //Keys for Bundle creation and extraction
     private static String CR_KEY = "currentRound";
     private static String CS_KEY = "currentSet";
     private static String TS_KEY = "totalScore";
@@ -28,7 +29,7 @@ public class GameLogic {
     private ArrayList<ArrayList<Integer>> mDiceCombination;
     private ArrayList<Integer> mCurrentCombination;
 
-    public GameLogic() {
+    GameLogic() {
         addDices();
         mCurrentRound = 1;
         mSet = 1;
@@ -38,6 +39,7 @@ public class GameLogic {
         mDiceCombination = new ArrayList<>();
 
     }
+
     private void addDices(){
         mDices = new ArrayList<>();
         mDices.addAll(Arrays.asList(
@@ -48,7 +50,13 @@ public class GameLogic {
                 new Dice(),
                 new Dice()));
     }
-    public GameLogic(Bundle bundle) {
+
+    /**
+     * Constructor used for creating a new instance when the application changes orientation
+     * or state without loosing the current game data.
+     * @param bundle
+     */
+    GameLogic(Bundle bundle) {
         mCurrentRound = bundle.getInt(CR_KEY);
         mSet = bundle.getInt(CS_KEY);
         mTotalScore = bundle.getInt(TS_KEY);
@@ -119,7 +127,8 @@ public class GameLogic {
         addScore(score);
     }
 
-    public void deactivateSeleted() {
+    //Used when score is collected to make selected dices inactive.
+    public void deactivateSelected() {
         for (Dice dice : mDices) {
             if (dice.isSelected()) {
                 dice.toggleSelected();
@@ -128,6 +137,7 @@ public class GameLogic {
         }
     }
 
+    //Reset function in between rounds.
     public void resetDices() {
         for (Dice dice : mDices) {
             dice.setNumber(0);
@@ -162,6 +172,7 @@ public class GameLogic {
         }
     }
 
+    //Getter for bundle used when the application changes orientation or swaps between states
     public Bundle getBundle() {
         Bundle result = new Bundle();
         result.putInt(CR_KEY, mCurrentRound);

@@ -13,7 +13,7 @@ public class Dice implements Serializable {
     private int mNumber;
     private static String TAG = "dice";
 
-    public Dice() {
+    Dice() {
         mSelected = false;
         mNumber = 0;
     }

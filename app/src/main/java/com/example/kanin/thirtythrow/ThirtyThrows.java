@@ -1,12 +1,11 @@
 package com.example.kanin.thirtythrow;
 /**
  * Main class for ThirtyThrow application, acts as the controller for the application,
- * responsible for all communications betweeen the model(GameLogic)
+ * responsible for all communications between the model(GameLogic)
  * and the View(activity_thirty_throws).
  * @author Thomas Sarlin - id15tsn
  */
 
-import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,7 +27,7 @@ public class ThirtyThrows extends AppCompatActivity {
     private Button mNextRoundButton;
     private TextView mMessage;
     private TextView mHeader;
-    private boolean mLockmenu = false;
+    private boolean mLockMenu = false;
     private Spinner mSpinner;
     private int mTargetValue=0;
     private GameLogic mGameLogic;
@@ -66,13 +65,13 @@ public class ThirtyThrows extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!mLockmenu && mGameLogic.lastSet()) {
+                if (!mLockMenu && mGameLogic.lastSet()) {
                     if (i != 0){
                         mTargetValue = i + 3;
-                        mMessage.setText(R.string.message_step2);
+                        setMessage(R.string.message_step2);
                     }
                     else {
-                        mMessage.setText(R.string.message_score_added_fround_low);
+                        setMessage(R.string.message_score_added_fround_low);
                     }
                 }
             }
@@ -103,7 +102,7 @@ public class ThirtyThrows extends AppCompatActivity {
             mGameLogic.addToHistory(mSpinner.getSelectedItem().toString());
 
             if (!mGameLogic.lastRound()) {
-                mLockmenu = false;
+                mLockMenu = false;
                 mGameLogic.nextRound();
                 mGameLogic.resetDices();
                 renderImages();
@@ -147,14 +146,14 @@ public class ThirtyThrows extends AppCompatActivity {
 
     private void calculateScore() {
         if (mGameLogic.checkScore(mTargetValue) == 0) {
-            mGameLogic.deactivateSeleted();
+            mGameLogic.deactivateSelected();
             mGameLogic.addScore(mTargetValue);
-            mMessage.setText(R.string.message_score_added_fround);
-            mLockmenu = true;
+            setMessage(R.string.message_score_added_fround);
+            mLockMenu = true;
         } else if (mGameLogic.checkScore(mTargetValue) == 1) {
             mGameLogic.resetSelection();
-            mMessage.setText(R.string.message_too_large);
-        } else {mMessage.setText(R.string.message_step2_2);}
+            setMessage(R.string.message_too_large);
+        } else {setMessage(R.string.message_step2_2);}
         renderImages();
         updateHeader();
     }
@@ -167,13 +166,13 @@ public class ThirtyThrows extends AppCompatActivity {
             mGameLogic.resetSelection();
             mRollButton.setVisibility(View.GONE);
             mNextRoundButton.setVisibility(View.VISIBLE);
-                mMessage.setText(mTargetValue==0?
+                setMessage(mTargetValue==0?
                         R.string.message_score_added_fround_low:
                         R.string.message_step2_2);
         } else {
             mNextRoundButton.setVisibility(View.GONE);
             mRollButton.setVisibility(View.VISIBLE);
-            mMessage.setText(R.string.message_step1);
+            setMessage(R.string.message_step1);
         }
         updateHeader();
         renderImages();
@@ -192,12 +191,12 @@ public class ThirtyThrows extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        AlertDialog.Builder alertdialog=new AlertDialog.Builder(this);
-        alertdialog.setTitle("Warning");
-        alertdialog.setMessage("Are you sure you Want to exit the game?\nAll progress will be lost.");
-        alertdialog.setPositiveButton("Yes", (dialog, which) -> ThirtyThrows.super.onBackPressed());
-        alertdialog.setNegativeButton("No", (dialog, which) -> dialog.cancel());
-        alertdialog.create();
-        alertdialog.show();
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(this);
+        alertDialog.setTitle("Warning");
+        alertDialog.setMessage("Are you sure you Want to exit the game?\nAll progress will be lost.");
+        alertDialog.setPositiveButton("Yes", (dialog, which) -> ThirtyThrows.super.onBackPressed());
+        alertDialog.setNegativeButton("No", (dialog, which) -> dialog.cancel());
+        alertDialog.create();
+        alertDialog.show();
     }
 }

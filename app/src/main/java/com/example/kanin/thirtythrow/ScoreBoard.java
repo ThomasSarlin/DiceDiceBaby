@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ScoreBoard extends AppCompatActivity {
     private static String SC_KEY= "scoreKey";
     private static String TS_KEY= "totalScoreKey";
-    private ListView mListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +30,12 @@ public class ScoreBoard extends AppCompatActivity {
         header.setText("TOTAL SCORE: "+totalScore);
     }
     private void setListView(ArrayList<Score> scores){
-        mListView=findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.listView);
         ArrayList<String> StringScores = new ArrayList<>();
         for(Score s:scores){
             StringScores.add(s.toString());
         }
-        mListView.setAdapter(new ArrayAdapter<>(this ,
+        listView.setAdapter(new ArrayAdapter<>(this ,
                 android.R.layout.simple_list_item_1,StringScores));
     }
 
@@ -48,7 +48,8 @@ public class ScoreBoard extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder aD=new AlertDialog.Builder(this);
         aD.setTitle("Warning");
-        aD.setMessage("Are you sure you want to leave this amazing scoreboard?\n\nThe game WILL restart and you'll lose your screen-shot moment.");
+        aD.setMessage("Are you sure you want to leave this amazing scoreboard?" +
+                "\n\nThe game WILL restart and you'll lose your screen-shot moment.");
         aD.setPositiveButton("Yes", (dialog, which) -> ScoreBoard.super.onBackPressed());
         aD.setNegativeButton("No", (dialog, which) -> dialog.cancel());
         aD.create();
